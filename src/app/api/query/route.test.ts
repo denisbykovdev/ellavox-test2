@@ -137,4 +137,35 @@ describe("POST /api/query", () => {
     });
     expect(supabase.rpc).not.toHaveBeenCalled();
   });
+
+  it("maps Gemini 504 deadline exceeded to a public unavailable message", async () => {
+    gemini.failWith = new Error(
+      JSON.stringify({
+        error: {
+          code: 504,
+          message: "Deadline expired before operation could complete.",
+          status: "DEADLINE_EXCEEDED",
+        },
+      }),
+    );
+
+    const { POST } = await import("./route");
+    const response = await POST(
+      new Request("http://localhost/api/query", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          question: "How many members exceeded $20K in 2025?",
+        }),
+      }),
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(500);
+    expect(body).toEqual({
+      status: "error",
+      message: "The model is temporarily unavailable. Please try again.",
+    });
+    expect(supabase.rpc).not.toHaveBeenCalled();
+  });
 });

@@ -79,7 +79,7 @@ function publicErrorMessage(error: unknown): string {
     const parsed = JSON.parse(raw) as {
       error?: { code?: number; message?: string };
     };
-    if (parsed.error?.code === 503) {
+    if (parsed.error?.code === 503 || parsed.error?.code === 504) {
       return MODEL_UNAVAILABLE;
     }
     if (parsed.error?.message) {
@@ -111,6 +111,7 @@ function isModelUnavailable(error: unknown): boolean {
     blob.includes("fetch failed") ||
     blob.includes("timeout") ||
     blob.includes("und_err_headers_timeout") ||
-    blob.includes("unavailable")
+    blob.includes("unavailable") ||
+    blob.includes("deadline_exceeded")
   );
 }
