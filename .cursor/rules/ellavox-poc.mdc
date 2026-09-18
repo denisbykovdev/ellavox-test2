@@ -40,6 +40,7 @@ By default **paid = plan paid**. This assumption is fixed.
 
 - SQL templates: `SELECT` only.
 - Local env is `.env.local` (gitignored). `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` may be used on the client. `SUPABASE_SERVICE_ROLE_KEY` is server only, never on the client.
+- Server client: `src/lib/supabase/server.ts`. Browser client: `src/lib/supabase/browser.ts`. Connection check: `GET /api/health`.
 
 ## Language
 
