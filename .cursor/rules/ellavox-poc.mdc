@@ -1,0 +1,59 @@
+---
+description: Ellavox claims POC — data, metrics, PII, and agent constraints
+alwaysApply: true
+---
+
+# Ellavox Claims POC
+
+POC: medical insurance claims. Source of truth is the `claims` table in local Supabase (Postgres).
+
+## Data load
+
+- Excel dates are Excel serials (epoch `1899-12-30`); convert to `date` on ingest.
+- Do not load the header column `"0"`. Skip the footer row with value `"xxxxx"`.
+- DB column names are `snake_case`.
+
+## Metrics
+
+Rows are not claims. Do not confuse them.
+
+- Claim count = `COUNT(DISTINCT claim_number)`
+- Member count = `COUNT(DISTINCT member_id)`
+- Money is summed at the row level.
+
+## Financial fields
+
+- `billed` — amount billed
+- `allowed` — amount allowed
+- `paid` — amount the plan paid
+- `member_paid` — amount the member paid
+
+By default **paid = plan paid**. This assumption is fixed.
+
+## PII
+
+`member_id` and `subscriber_id` are personal identifiers. Default to aggregates only. Never show raw IDs.
+
+## Technical
+
+- SQL templates: `SELECT` only.
+- `service_role` key: server only, never on the client.
+
+## Language
+
+All Cursor rules, code comments, and README files must be in English.
+
+## Agent
+
+- Keep this rule short. After each completed task, update it if new facts or agreements appear.
+- Do not create or push git commits. After every completed task, include a suggested commit message in the reply (text only).
+- Title = work scope (what shipped for the user), not a file/code change. Prefix: `feature`, `bug-fix`, or `refactor`.
+- Bullets = completed subtasks under that scope.
+
+```
+feature: create AI project rules
+
+- Add an always-on Cursor rule with claims POC facts
+- Require English for rules, comments, and README
+- Require a suggested commit message after each task
+```

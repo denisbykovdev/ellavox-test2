@@ -1,0 +1,153 @@
+
+# Ellavox Engineering Evaluation Exercise: Claims Natural Language Query POC
+
+
+## Overview
+This exercise evaluates how you approach a real-world, ambiguous data product under time constraints.
+
+You will build a **localhost-runnable prototype** that allows a user to:
+1) Load a supplied claims dataset  
+2) Ask natural-language questions  
+3) Receive structured, exportable results suitable for standard reporting  
+
+We care more about **how you think and prioritize** than about feature completeness.
+
+---
+
+## Timebox & Constraints
+- **Time limit:** 8 hours (hard cap)
+- **Required stack:**
+  - **Next.js**
+  - **Supabase** (local or hosted, your choice)
+- Must run locally after cloning the repo
+- You may use any open-source libraries or AI services
+
+---
+
+## What You Will Be Given
+- A **claims Excel file** (source of truth for the exercise)
+- No predefined schema, mappings, or metrics
+
+You are expected to decide how to model, load, and query the data.
+
+---
+
+## What to Deliver
+Your repository should include:
+
+### 1) Working prototype
+- A UI to:
+  - Load the provided Excel file
+  - Ask natural-language questions
+  - View results as tables (charts optional)
+- Results should be suitable for **Excel-based reporting**
+
+### 2) Export capability
+- One-click export to **Excel (.xlsx)**
+- Each query/result set should become its own worksheet/tab
+- Include enough context in the export to understand:
+  - What question was asked
+  - What time period / filters were applied
+
+### 3) Documentation
+- `README.md` with:
+  - Setup instructions
+  - How to run locally
+  - How to load the data
+  - Example questions to try
+- A short section describing:
+  - Key assumptions you made
+  - What you intentionally did *not* build due to time
+
+> Optional: a short walkthrough video or Loom is welcome but not required.
+
+---
+
+## Functional Requirements
+
+### A) Data Ingestion & Understanding
+- Load the supplied claims Excel file into a queryable form
+- Identify and work with common claims concepts such as:
+  - Member identifiers
+  - Claim identifiers
+  - Dates
+  - Allowed / paid / member responsibility amounts
+  - Claim type (medical vs pharmacy), if present
+- Surface a basic **data overview** after ingestion, such as:
+  - Row count
+  - Date range
+  - Distinct members
+  - Obvious data quality issues
+
+You decide how much structure or validation to apply.
+
+---
+
+### B) Metrics & Reporting Semantics
+Support a small but consistent set of reporting concepts, such as:
+- Financial measures (e.g., allowed vs paid)
+- Member counts and claim counts
+- Common time windows:
+  - Year-to-date
+  - Prior year-to-date
+  - Rolling 12 months
+  - Monthly summaries
+- "Top N" and threshold-based groupings (e.g., high-cost claimants)
+
+The goal is repeatable, understandable results — not perfect actuarial accuracy.
+
+---
+
+### C) Natural Language Questions
+Users should be able to ask questions in plain English and receive:
+
+1) A clearly labeled result set (table)
+2) A short explanation of how the result was calculated
+
+At minimum, support questions like:
+- "How many members exceeded $20K in the last 12 months?"
+- "Who are the top 20 members by allowed amount YTD?"
+- "Show a monthly summary of allowed vs paid for last year"
+
+Handling ambiguity (e.g., what "paid" means) is part of the exercise.
+
+---
+
+### D) Guardrails & Privacy Awareness
+- Default to **aggregate-level outputs**
+- If member-level detail is shown:
+  - Make that an explicit user choice
+  - Avoid exposing raw identifiers by default
+- Show that you are thinking about reliability and data safety, even in a POC
+
+---
+
+## Success Criteria
+A submission is considered successful if it:
+- Loads the provided Excel file reliably
+- Produces multiple meaningful, repeatable report tables
+- Answers at least **10 natural-language questions**
+- Exports results cleanly to Excel
+- Runs locally using documented steps
+- Demonstrates thoughtful tradeoffs under an 8-hour constraint
+
+---
+
+## How We Evaluate
+We will look at:
+
+- **Product judgment** – sensible defaults, usable flow, clear outputs
+- **Data thinking** – how you interpret messy, real-world data
+- **Reliability** – consistency, validation, and guardrails
+- **Code quality** – clarity, structure, and maintainability
+- **Decision-making** – what you chose *not* to do and why
+
+There is no single "correct" implementation.
+
+---
+
+## Notes
+This is not a trick exercise.  
+We expect incomplete work — that's intentional.
+
+We're interested in how you reason, simplify, and ship something useful under a time constraint.
