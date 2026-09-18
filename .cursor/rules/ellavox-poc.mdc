@@ -7,6 +7,8 @@ alwaysApply: true
 
 POC: medical insurance claims. Source of truth is the `claims` table in local Supabase (Postgres).
 
+Stack: Next.js App Router, TypeScript, Tailwind, ESLint. Home page has three placeholder zones: Data Upload, Question, Results.
+
 ## Data load
 
 - Excel dates are Excel serials (epoch `1899-12-30`); convert to `date` on ingest.
