@@ -25,6 +25,15 @@ export function coerceSqlParamValue(
       if (!DATE_RE.test(text)) {
         throw new Error(`Expected date YYYY-MM-DD, got ${String(value)}`);
       }
+      const [year, month, day] = text.split("-").map(Number);
+      const utc = new Date(Date.UTC(year, month - 1, day));
+      if (
+        utc.getUTCFullYear() !== year ||
+        utc.getUTCMonth() !== month - 1 ||
+        utc.getUTCDate() !== day
+      ) {
+        throw new Error(`Invalid calendar date ${text}`);
+      }
       return text;
     }
     case "integer": {

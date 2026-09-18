@@ -1,4 +1,5 @@
 import { IngestStatus } from "./ingest-status";
+import { QueryWorkspace } from "./query-workspace";
 
 export default function Home() {
   return (
@@ -13,13 +14,7 @@ export default function Home() {
           <IngestStatus />
         </section>
 
-        <section className="rounded-xl border border-dashed border-zinc-300 bg-white p-6">
-          <h2 className="text-lg font-medium text-zinc-900">Question</h2>
-        </section>
-
-        <section className="min-h-64 rounded-xl border border-dashed border-zinc-300 bg-white p-6">
-          <h2 className="text-lg font-medium text-zinc-900">Results</h2>
-        </section>
+        <QueryWorkspace />
       </div>
     </main>
   );

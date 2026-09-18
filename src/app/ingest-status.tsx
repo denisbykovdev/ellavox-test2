@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { formatDisplayLabel } from "@/lib/format";
 
 let ingestRequest: Promise<string> | null = null;
 
@@ -14,18 +15,22 @@ function loadIngestStatus(): Promise<string> {
           message?: string;
         };
 
-        if (data.status === "already_loaded") return "already_loaded";
-        if (data.status === "loaded") return `loaded ${data.inserted ?? 0} rows`;
-        return data.message ?? "error";
+        if (data.status === "already_loaded") return "Already loaded";
+        if (data.status === "loaded") {
+          const count = data.inserted ?? 0;
+          return `Loaded ${count.toLocaleString("en-US")} rows`;
+        }
+        if (data.message) return formatDisplayLabel(data.message);
+        return "Error";
       })
-      .catch(() => "error");
+      .catch(() => "Error");
   }
 
   return ingestRequest;
 }
 
 export function IngestStatus() {
-  const [status, setStatus] = useState("loading");
+  const [status, setStatus] = useState("Loading");
 
   useEffect(() => {
     let cancelled = false;

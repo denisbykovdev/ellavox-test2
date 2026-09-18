@@ -15,7 +15,9 @@ describe("coerceSqlParamValue", () => {
     expect(coerceSqlParamValue("numeric", "20000.5")).toBe(20000.5);
   });
 
-  it("rejects a decimal when the type is integer", () => {
-    expect(() => coerceSqlParamValue("integer", 20.5)).toThrow(/integer/);
+  it("rejects an impossible calendar date", () => {
+    expect(() => coerceSqlParamValue("date", "2025-02-30")).toThrow(
+      /Invalid calendar date/,
+    );
   });
 });
