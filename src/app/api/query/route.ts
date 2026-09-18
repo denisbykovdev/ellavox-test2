@@ -19,6 +19,15 @@ export async function POST(request: Request) {
 
     const today = new Date().toISOString().slice(0, 10);
     const result = await selectTemplateWithGemini(question, today);
+
+    if ("template" in result && result.template === null) {
+      return NextResponse.json({
+        status: "question_not_recognized",
+        message: "Question not recognized",
+        template: null,
+      });
+    }
+
     return NextResponse.json(result);
   } catch (error) {
     console.error("query failed", error);
