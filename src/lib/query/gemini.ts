@@ -16,7 +16,10 @@ export async function selectTemplateWithGemini(
     throw new Error("Missing GEMINI_API_KEY");
   }
 
-  const ai = new GoogleGenAI({ apiKey });
+  const ai = new GoogleGenAI({
+    apiKey,
+    httpOptions: { timeout: 25_000 },
+  });
   const prompt = buildSelectPrompt(question, today, CLAIMS_SQL_TEMPLATES);
   const response = await ai.models.generateContent({
     model: "gemini-flash-latest",

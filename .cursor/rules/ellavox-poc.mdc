@@ -44,8 +44,8 @@ By default **paid = plan paid**. This assumption is fixed.
 - Local env is `.env.local` (gitignored). `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` may be used on the client. `SUPABASE_SERVICE_ROLE_KEY` and `GEMINI_API_KEY` are server only, never on the client.
 - Server client: `src/lib/supabase/server.ts`. Browser client: `src/lib/supabase/browser.ts`. Connection check: `GET /api/health`.
 - Ingest: `GET /api/ingest` loads `Data_For_AI.xlsx` with `service_role` if `claims` is empty. Pure row transforms live in `src/lib/ingest/transform.ts`.
-- NL query: `POST /api/query` with `{ question }` uses Gemini to pick a SQL template, binds typed params into SELECT-only SQL, and runs it through `execute_readonly_query`. The RPC SELECT guard uses PostgreSQL `\y` (word boundary; `\b` is backspace). Unmatched questions return `question not recognized` and do not run SQL.
-- Tests: `npm test` (Vitest).
+- NL query: `POST /api/query` with `{ question }` uses Gemini to pick a SQL template, binds typed params into SELECT-only SQL, and runs it through `execute_readonly_query`. The RPC SELECT guard uses PostgreSQL `\y` (word boundary; `\b` is backspace). Gemini calls use a 25s HTTP timeout; 503/timeout/fetch failures map to a public unavailable message. Unmatched questions return `question not recognized` and do not run SQL.
+- Tests: `npm test` (Vitest). README covers local run, ingest, templates, and timebox cuts.
 
 ## Language
 

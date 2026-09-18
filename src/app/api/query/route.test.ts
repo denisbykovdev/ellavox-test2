@@ -4,6 +4,7 @@ import { EXAMPLE_QUESTIONS } from "@/lib/query/examples";
 
 const gemini = vi.hoisted(() => ({
   text: "",
+  failWith: null as Error | null,
 }));
 
 const supabase = vi.hoisted(() => ({
@@ -14,7 +15,10 @@ const supabase = vi.hoisted(() => ({
 vi.mock("@google/genai", () => ({
   GoogleGenAI: class {
     models = {
-      generateContent: async () => ({ text: gemini.text }),
+      generateContent: async () => {
+        if (gemini.failWith) throw gemini.failWith;
+        return { text: gemini.text };
+      },
     };
   },
 }));
@@ -30,6 +34,7 @@ describe("POST /api/query", () => {
   beforeEach(() => {
     process.env.GEMINI_API_KEY = "test-key";
     gemini.text = "";
+    gemini.failWith = null;
     supabase.from.mockClear();
     supabase.rpc.mockReset();
     supabase.rpc.mockResolvedValue({
@@ -104,5 +109,32 @@ describe("POST /api/query", () => {
     });
     expect(supabase.rpc).not.toHaveBeenCalled();
     expect(supabase.from).not.toHaveBeenCalled();
+  });
+
+  it("maps Gemini fetch timeouts to a public unavailable message", async () => {
+    const timeout = new Error('HTTP/2: "headers timeout after 300000"');
+    (timeout as Error & { code: string }).code = "UND_ERR_HEADERS_TIMEOUT";
+    gemini.failWith = Object.assign(new TypeError("fetch failed"), {
+      cause: timeout,
+    });
+
+    const { POST } = await import("./route");
+    const response = await POST(
+      new Request("http://localhost/api/query", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          question: "How many members exceeded $20K in 2025?",
+        }),
+      }),
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(500);
+    expect(body).toEqual({
+      status: "error",
+      message: "The model is temporarily unavailable. Please try again.",
+    });
+    expect(supabase.rpc).not.toHaveBeenCalled();
   });
 });

@@ -67,14 +67,20 @@ export async function POST(request: Request) {
   }
 }
 
+const MODEL_UNAVAILABLE =
+  "The model is temporarily unavailable. Please try again.";
+
 function publicErrorMessage(error: unknown): string {
   const raw = error instanceof Error ? error.message : "Query failed";
+  if (isModelUnavailable(error)) {
+    return MODEL_UNAVAILABLE;
+  }
   try {
     const parsed = JSON.parse(raw) as {
       error?: { code?: number; message?: string };
     };
     if (parsed.error?.code === 503) {
-      return "The model is temporarily unavailable. Please try again.";
+      return MODEL_UNAVAILABLE;
     }
     if (parsed.error?.message) {
       return parsed.error.message;
@@ -83,4 +89,28 @@ function publicErrorMessage(error: unknown): string {
     // Keep the original message when it is not a Gemini JSON payload.
   }
   return raw;
+}
+
+function isModelUnavailable(error: unknown): boolean {
+  const parts: string[] = [];
+  let current: unknown = error;
+  for (let i = 0; i < 4 && current; i += 1) {
+    if (current instanceof Error) {
+      parts.push(current.name, current.message);
+      if ("code" in current && current.code != null) {
+        parts.push(String(current.code));
+      }
+      current = current.cause;
+      continue;
+    }
+    parts.push(String(current));
+    break;
+  }
+  const blob = parts.join(" ").toLowerCase();
+  return (
+    blob.includes("fetch failed") ||
+    blob.includes("timeout") ||
+    blob.includes("und_err_headers_timeout") ||
+    blob.includes("unavailable")
+  );
 }
