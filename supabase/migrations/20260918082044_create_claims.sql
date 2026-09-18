@@ -56,3 +56,14 @@ create index claims_member_id_idx on public.claims (member_id);
 create index claims_claim_number_idx on public.claims (claim_number);
 
 alter table public.claims enable row level security;
+
+-- Open SELECT for every role, including anon. This is a conscious POC decision
+-- so queries can run anonymously. Production should narrow this policy.
+-- INSERT/UPDATE/DELETE stay closed; loads use service_role, which bypasses RLS.
+create policy claims_select_all
+  on public.claims
+  for select
+  to public
+  using (true);
+
+grant select on public.claims to anon, authenticated;

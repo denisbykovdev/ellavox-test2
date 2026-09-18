@@ -15,6 +15,7 @@ Stack: Next.js App Router, TypeScript, Tailwind, ESLint. Home page has three pla
 - Do not load the header column `"0"`. Skip the footer row with value `"xxxxx"`.
 - DB column names are `snake_case`. `claims` has 39 Excel fields plus `id`. Money columns are `numeric`; `incurred_date` and `paid_date` are `date`; IDs and codes are `text`.
 - Indexes: `incurred_date`, `member_id`, `claim_number`.
+- RLS is on. SELECT is open to `anon` for this POC (narrow in production). Writes go through `service_role` only.
 
 ## Metrics
 
