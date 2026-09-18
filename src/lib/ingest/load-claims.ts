@@ -1,7 +1,7 @@
 import "server-only";
 
-import path from "node:path";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { excelFilePath } from "@/lib/ingest/excel-path";
 import { streamExcelRows } from "@/lib/ingest/stream-xlsx-rows";
 import {
   isFooterRow,
@@ -9,7 +9,6 @@ import {
   type ClaimRow,
 } from "@/lib/ingest/transform";
 
-const EXCEL_FILE_NAME = "Data_For_AI.xlsx";
 const BATCH_SIZE = 2000;
 
 export type IngestResult = {
@@ -18,10 +17,6 @@ export type IngestResult = {
   skipped: number;
   rowCount?: number;
 };
-
-export function excelFilePath(): string {
-  return path.join(process.cwd(), EXCEL_FILE_NAME);
-}
 
 export async function ingestClaims(): Promise<IngestResult> {
   const supabase = createServerSupabaseClient();
