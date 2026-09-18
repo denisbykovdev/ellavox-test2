@@ -66,4 +66,6 @@ create policy claims_select_all
   to public
   using (true);
 
-grant select on public.claims to anon, authenticated;
+grant select on public.claims to anon, authenticated, service_role;
+grant insert on public.claims to service_role;
+grant usage, select on sequence public.claims_id_seq to service_role;

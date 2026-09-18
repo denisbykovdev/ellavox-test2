@@ -1,3 +1,5 @@
+import { IngestStatus } from "./ingest-status";
+
 export default function Home() {
   return (
     <main className="min-h-screen bg-zinc-50 px-6 py-10">
@@ -8,6 +10,7 @@ export default function Home() {
 
         <section className="rounded-xl border border-dashed border-zinc-300 bg-white p-6">
           <h2 className="text-lg font-medium text-zinc-900">Data Upload</h2>
+          <IngestStatus />
         </section>
 
         <section className="rounded-xl border border-dashed border-zinc-300 bg-white p-6">
